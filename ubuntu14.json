@@ -1,0 +1,133 @@
+{
+  "variables": {
+    "VAGRANT_TOKEN": "{{env `VAGRANT_TOKEN`}}",
+    "readme_vagrant":"Ubuntu 14.04.5 with kernel 4.4.0-31-generic use to test the allspark installation",
+    "organization":"actinium",
+    "version" : "1.0.{{timestamp}}",
+    "http":"http/ubuntu/14",
+    "ks_file": "/ubuntu14.cfg",
+    "distribution":"ubuntu14",
+    "scripts_path":"scripts/ubuntu/14",
+    "name":"packer-ubuntu-14-x86_64",
+    "shutdown":"echo 'vagrant'|sudo -S shutdown -P now",
+    "iso_base_url": "iso",
+    "iso_checksum_type": "sha256",
+    "username": "vagrant",
+    "password": "vagrant",
+    "disk_size": "40960",
+    "timeout": "300m",
+    "headless": "true",
+    "iso_checksum": "dde07d37647a1d2d9247e33f14e91acb10445a97578384896b4e1d985f754cc1"
+  },
+  "builders": [
+    {
+      "type": "qemu",
+      "qemu_binary": "/usr/libexec/qemu-kvm",
+      "iso_urls": [
+        "iso/ubuntu-14.04.5-server-amd64.iso",
+        "http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso"
+      ],
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "{{user `timeout`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "format": "{{user `format`}}",
+      "accelerator": "kvm",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "http_directory": "{{user `http`}}",
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `ks_file`}}",
+        " -- ",
+        "<enter>"
+      ],
+      "shutdown_command": "{{user `shutdown`}}",
+      "qemuargs": [[ "-m", "2048M" ],[ "-smp", "2" ]],
+      "vm_name": "{{user `name`}}"
+    },
+    {
+      "type": "virtualbox-iso",
+      "iso_urls": [
+        "iso/ubuntu-14.04.5-server-amd64.iso",
+        "http://releases.ubuntu.com/14.04/ubuntu-14.04.5-server-amd64.iso"
+      ],
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "{{user `timeout`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "Ubuntu_64",
+      "headless": "{{user `headless`}}",
+      "http_directory": "{{user `http`}}",
+      "boot_command": [
+        "<esc><wait>",
+        "<esc><wait>",
+        "<enter><wait>",
+        "/install/vmlinuz",
+        " auto=true",
+        " priority=critical",
+        " initrd=/install/initrd.gz",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `ks_file`}}",
+        " -- ",
+        "<enter>"
+      ],
+      "shutdown_command": "{{user `shutdown`}}",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "{{user `name`}}",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+    "type": "shell",
+    "expect_disconnect": "true",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+    "scripts": [
+      "{{user `scripts_path`}}/update.sh",
+      "{{user `scripts_path`}}/vagrant.sh",
+      "{{user `scripts_path`}}/cleanup.sh"
+    ]
+  }
+],
+  "post-processors": [
+    [
+    {
+      "output": "builds/{{user `distribution`}}-{{.Provider}}.box",
+      "compression_level": 9,
+      "type": "vagrant"
+    },
+    {
+      "type": "vagrant-cloud",
+      "box_tag": "{{user `organization`}}/{{user `distribution`}}",
+      "version": "{{user `version`}}",
+      "access_token": "{{user `VAGRANT_TOKEN`}}",
+      "version_description": "{{user `readme_vagrant`}}"
+   }
+  ]
+ ]
+}

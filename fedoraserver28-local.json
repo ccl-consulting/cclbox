@@ -1,0 +1,111 @@
+{
+  "variables": {
+    "version" : "1.0.{{timestamp}}",
+    "http":"http/fedoraserver/28/",
+    "ks_file": "fedoraserver28.cfg",
+    "distribution":"fedoraserver28",
+    "scripts_path":"scripts/fedoraserver/28",
+    "name":"packer-fedora-server-28-x86_64",
+    "shutdown":"echo 'vagrant'|sudo systemctl poweroff",
+    "iso_base_url": "iso",
+    "iso_checksum_type": "sha256",
+    "username": "vagrant",
+    "password": "vagrant",
+    "disk_size": "40960",
+    "timeout": "300m",
+    "headless": "true",
+    "iso_checksum": "ea1efdc692356b3346326f82e2f468903e8da59324fdee8b10eac4fea83f23fe"
+  },
+  "builders": [
+    {
+      "type": "qemu",
+      "iso_urls": [
+        "{{user `iso_base_url`}}/Fedora-Server-netinst-x86_64-28-1.1.iso",
+        "https://download.fedoraproject.org/pub/fedora/linux/releases/28/Server/x86_64/iso/Fedora-Server-netinst-x86_64-28-1.1.iso"
+      ],
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "{{user `timeout`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "format": "{{user `format`}}",
+      "accelerator": "kvm",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "http_directory": "{{user `http`}}",
+      "boot_command": [
+        "<tab> ",
+        "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/{{user `ks_file`}} ",
+        "biosdevname=0 ",
+        "net.ifnames=0 ",
+        "<enter>"
+      ],
+      "shutdown_command": "{{user `shutdown`}}",
+      "qemuargs": [[ "-m", "2048M" ],[ "-smp", "2" ]],
+      "vm_name": "{{user `name`}}"
+    },
+    {
+      "type": "virtualbox-iso",
+      "iso_urls": [
+        "{{user `iso_base_url`}}/Fedora-Server-dvd-x86_64-28-1.1.iso",
+        "https://download.fedoraproject.org/pub/fedora/linux/releases/28/Server/x86_64/iso/Fedora-Server-dvd-x86_64-28-1.1.iso"
+      ],
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "{{user `timeout`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "Fedora_64",
+      "headless": "{{user `headless`}}",
+      "http_directory": "{{user `http`}}",
+      "boot_command": [
+        "<tab> ",
+        "inst.ks=http://{{.HTTPIP}}:{{.HTTPPort}}/{{user `ks_file`}} ",
+        "biosdevname=0 ",
+        "net.ifnames=0 ",
+        "<enter>"
+      ],
+      "shutdown_command": "{{user `shutdown`}}",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "{{user `name`}}",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+    "type": "shell",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+    "scripts": [
+      "{{user `scripts_path`}}/update.sh",
+      "{{user `scripts_path`}}/vagrant.sh",
+      "{{user `scripts_path`}}/sshd.sh",
+      "{{user `scripts_path`}}/cleanup.sh"
+    ]
+  }
+],
+  "post-processors": [
+    [
+    {
+      "output": "builds/{{user `distribution`}}-{{.Provider}}.box",
+      "compression_level": 9,
+      "type": "vagrant"
+    }
+  ]
+ ]
+}

@@ -1,0 +1,150 @@
+{
+  "variables": {
+    "VAGRANT_TOKEN": "{{env `VAGRANT_TOKEN`}}",
+    "readme_vagrant":"CentOS 7.5.1804 with kernel 3.10.0-862.2.3.el7.x86_64 use to test the allspark installation",
+    "organization":"actinium",
+    "version" : "1.0.{{timestamp}}",
+    "http":"http/centos/7/",
+    "ks_file": "centos7.cfg",
+    "distribution":"centos7",
+    "scripts_path":"scripts/centos/7",
+    "name":"packer-centos-7-x86_64",
+    "shutdown":"echo 'vagrant'|sudo -S /sbin/halt -h -p",
+    "iso_base_url": "iso",
+    "iso_checksum_type": "sha256",
+    "username": "vagrant",
+    "password": "vagrant",
+    "disk_size": "40960",
+    "timeout": "300m",
+    "headless": "true",
+    "iso_checksum": "714acc0aefb32b7d51b515e25546835e55a90da9fb00417fbee2d03a62801efd"
+  },
+  "builders": [
+    {
+      "type": "qemu",
+      "qemu_binary": "/usr/libexec/qemu-kvm",
+      "iso_urls": [
+        "{{user `iso_base_url`}}/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://ftp.rezopole.net/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://miroir.univ-paris13.fr/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirror.in2p3.fr/linux/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://fr2.rpmfind.net/linux/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirrors.proxad.net/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://rep-centos-fr.upress.io/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirror.ate.info/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.quelquesmots.fr/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirrors.benatherton.com/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mir01.syntis.net/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.ircam.fr/pub/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://distrib-coffee.ipsl.jussieu.fr/pub/linux/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://miroir.univ-lorraine.fr/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.atosworldline.com/public/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirror.plusserver.com/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.standaloneinstaller.com/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://ftp.pasteur.fr/mirrors/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.crazyfrogs.org/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirror.fr.planethoster.net/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.mit.edu/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso"
+      ],
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "{{user `timeout`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "headless": "{{user `headless`}}",
+      "format": "{{user `format`}}",
+      "accelerator": "kvm",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "http_directory": "{{user `http`}}",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `ks_file`}}<enter><wait>"
+      ],
+      "shutdown_command": "{{user `shutdown`}}",
+      "qemuargs": [[ "-m", "2048M" ],[ "-smp", "2" ]],
+      "vm_name": "{{user `name`}}"
+    },
+    {
+      "type": "virtualbox-iso",
+      "iso_urls": [
+        "{{user `iso_base_url`}}/CentOS-{{user `centos_version`}}-{{user `centos_arch`}}-{{user `iso_filename`}}.iso",
+        "http://ftp.rezopole.net/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://miroir.univ-paris13.fr/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirror.in2p3.fr/linux/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://fr2.rpmfind.net/linux/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirrors.proxad.net/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://rep-centos-fr.upress.io/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirror.ate.info/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.quelquesmots.fr/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirrors.benatherton.com/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mir01.syntis.net/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.ircam.fr/pub/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://distrib-coffee.ipsl.jussieu.fr/pub/linux/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://miroir.univ-lorraine.fr/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.atosworldline.com/public/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirror.plusserver.com/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.standaloneinstaller.com/centos/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://ftp.pasteur.fr/mirrors/CentOS/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.crazyfrogs.org/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://centos.mirror.fr.planethoster.net/7.5.1804/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso",
+        "http://mirrors.mit.edu/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1804.iso"
+      ],
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "{{user `timeout`}}",
+      "disk_size": "{{user `disk_size`}}",
+      "guest_os_type": "RedHat_64",
+      "headless": "{{user `headless`}}",
+      "http_directory": "{{user `http`}}",
+      "boot_command": [
+        "<tab> text ks=http://{{ .HTTPIP }}:{{ .HTTPPort }}/{{user `ks_file`}}<enter><wait>"
+      ],
+      "shutdown_command": "{{user `shutdown`}}",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "{{user `name`}}",
+      "vboxmanage": [
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--memory",
+          "2048"
+        ],
+        [
+          "modifyvm",
+          "{{.Name}}",
+          "--cpus",
+          "2"
+        ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+    "type": "shell",
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E bash '{{.Path}}'",
+    "scripts": [
+      "{{user `scripts_path`}}/vagrant.sh",
+      "{{user `scripts_path`}}/cleanup.sh"
+    ]
+  }
+],
+  "post-processors": [
+    [
+    {
+      "output": "builds/{{user `distribution`}}-{{.Provider}}.box",
+      "compression_level": 9,
+      "type": "vagrant"
+    },
+    {
+      "type": "vagrant-cloud",
+      "box_tag": "{{user `organization`}}/{{user `distribution`}}",
+      "version": "{{user `version`}}",
+      "access_token": "{{user `VAGRANT_TOKEN`}}",
+      "version_description": "{{user `readme_vagrant`}}"
+   }
+  ]
+ ]
+}
