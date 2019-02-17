@@ -71,4 +71,4 @@ To create an image of CentOS 7.5 (1804) for kvm :
 
 > To browse available plugins, run `gem list --remote vagrant-`
 
-> To browse available actinium boxes [Here](https://app.vagrantup.com/ccl-consulting/)
+> To browse available CCL-Consulting boxes [Here](https://app.vagrantup.com/ccl-consulting/)
