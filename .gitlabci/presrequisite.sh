@@ -6,11 +6,11 @@ sudo yum update -y
 # Install wget
 sudo yum install -y wget
 # Go on working_directory
-cd /home/bot_actinium/gcp/
+cd /home/bot-cclbox/gcp/
 # Install following dependency packages
 sudo yum group install -y "Development Tools"
 # Install following dependency packages
-sudo yum -y install qemu-kvm libvirt virt-install bridge-utils libvirt-devel  libxslt-devel libxml2-devel libvirt-devel libguestfs-tools-c
+sudo yum -y install qemu-kvm libvirt virt-install bridge-utils libvirt-devel libxslt-devel libxml2-devel libvirt-devel libguestfs-tools-c
 # Authorize Ip Forwarding
 sudo  echo "net.ipv4.ip_forward = 1"|sudo tee /etc/sysctl.d/99-ipforward.conf
 sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
@@ -30,5 +30,5 @@ wget https://releases.hashicorp.com/packer/1.3.4/packer_1.3.4_linux_amd64.zip
 unzip packer_1.3.4_linux_amd64.zip
 # Executable packer
 chmod 755 packer
-# Give rights to bot_actinium
+# Give rights to CCL-Consulting
 chown -Rf bot-cclbox:bot-cclbox *

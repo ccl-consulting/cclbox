@@ -1,8 +1,8 @@
 {
   "variables": {
     "VAGRANT_TOKEN": "{{env `VAGRANT_TOKEN`}}",
-    "readme_vagrant":"Fedora Server 28 with kernel 4.17.19-200.fc28.x86_64 use to test the allspark installation",
-    "organization":"actinium",
+    "readme_vagrant":"Fedora Server 28 with kernel 4.17.19-200.fc28.x86_64",
+    "organization":"CCL-Consulting",
     "version" : "1.0.{{timestamp}}",
     "http":"http/fedoraserver/28/",
     "ks_file": "fedoraserver28.cfg",

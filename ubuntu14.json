@@ -1,8 +1,8 @@
 {
   "variables": {
     "VAGRANT_TOKEN": "{{env `VAGRANT_TOKEN`}}",
-    "readme_vagrant":"Ubuntu 14.04.5 with kernel 4.4.0-31-generic use to test the allspark installation",
-    "organization":"actinium",
+    "readme_vagrant":"Ubuntu 14.04.5 with kernel 4.4.0-31-generic",
+    "organization":"CCL-Consulting",
     "version" : "1.0.{{timestamp}}",
     "http":"http/ubuntu/14",
     "ks_file": "/ubuntu14.cfg",

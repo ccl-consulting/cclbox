@@ -1,8 +1,8 @@
 {
   "variables": {
     "VAGRANT_TOKEN": "{{env `VAGRANT_TOKEN`}}",
-    "readme_vagrant":"CentOS 7.5.1804 with kernel 3.10.0-862.2.3.el7.x86_64 use to test the allspark installation",
-    "organization":"actinium",
+    "readme_vagrant":"CentOS 7.5.1804 with kernel 3.10.0-862.2.3.el7.x86_64",
+    "organization":"CCL-Consulting",
     "version" : "1.0.{{timestamp}}",
     "http":"http/centos/7/",
     "ks_file": "centos7.cfg",

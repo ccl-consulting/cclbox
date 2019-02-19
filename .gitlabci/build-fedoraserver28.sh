@@ -5,5 +5,5 @@ set +x
 set -e
 # Init Vagrant Tocken
 export VAGRANT_TOKEN=$(cat VAGRANT_TOKEN.txt)
-# Build And Deploy the New Vagrant Box named actinium/centos7
+# Build And Deploy the New Vagrant Box named CCL-Consulting/centos7
 ./packer build --only=qemu fedoraserver28.json
