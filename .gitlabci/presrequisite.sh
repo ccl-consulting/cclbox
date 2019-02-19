@@ -17,18 +17,18 @@ sudo sysctl -p /etc/sysctl.d/99-ipforward.conf
 # Start Libvirt
 sudo systemctl start libvirtd
 # Download Vagrant RPM
-wget https://releases.hashicorp.com/vagrant/2.2.0/vagrant_2.2.0_x86_64.rpm
+wget https://releases.hashicorp.com/vagrant/2.2.3/vagrant_2.2.3_x86_64.rpm
 # Install Vagrant RPM
-sudo yum -y install ./vagrant_2.2.0_x86_64.rpm
+sudo yum -y install ./vagrant_2.2.3_x86_64.rpm
 # Install vagrant libvirt/kvm plugin
 vagrant plugin install vagrant-libvirt
 # Install git
 sudo yum install -y git unzip
 # Downloads Packer
-wget https://releases.hashicorp.com/packer/1.3.2/packer_1.3.2_linux_amd64.zip
+wget https://releases.hashicorp.com/packer/1.3.4/packer_1.3.4_linux_amd64.zip
 # Install Packer
 unzip packer_1.3.2_linux_amd64.zip
 # Executable packer
 chmod 755 packer
 # Give rights to bot_actinium
-chown -Rf bot_actinium:bot_actinium *
+chown -Rf bot-cclbox:bot-cclbox *
