@@ -27,7 +27,7 @@ sudo yum install -y git unzip
 # Downloads Packer
 wget https://releases.hashicorp.com/packer/1.3.4/packer_1.3.4_linux_amd64.zip
 # Install Packer
-unzip packer_1.3.2_linux_amd64.zip
+unzip packer_1.3.4_linux_amd64.zip
 # Executable packer
 chmod 755 packer
 # Give rights to bot_actinium
