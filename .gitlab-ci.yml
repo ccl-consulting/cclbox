@@ -96,7 +96,7 @@ vagrantbox-fedoraserver28:
     - gcloud auth activate-service-account --key-file=./account.json
     - gcloud --quiet config set project $GCP_PROJECT_ID
     - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
-    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-centos7.sh && .gitlabci/build-fedoraserver28.sh'
+    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-fedoraserver28.sh && .gitlabci/build-fedoraserver28.sh'
   dependencies:
     - vagrantbox-centos7
   only:
@@ -116,7 +116,7 @@ vagrantbox-ubuntu14:
     - gcloud auth activate-service-account --key-file=./account.json
     - gcloud --quiet config set project $GCP_PROJECT_ID
     - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
-    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-centos7.sh && .gitlabci/build-ubuntu14.sh'
+    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-ubuntu14.sh && .gitlabci/build-ubuntu14.sh'
   dependencies:
     - vagrantbox-fedoraserver28
   only:
