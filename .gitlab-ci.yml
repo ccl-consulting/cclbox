@@ -41,7 +41,7 @@ qemu:
 terraform-build-box:
   stage: Provisioning GCP
   image:
-    name: hashicorp/terraform:light
+    name: hashicorp/terraform:0.11.14
     entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
@@ -126,7 +126,7 @@ vagrantbox-ubuntu14:
 terraform-destroy:
   stage: Destroy GCP
   image:
-    name: hashicorp/terraform:light
+    name: hashicorp/terraform:0.11.14
     entrypoint:
     - '/usr/bin/env'
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
