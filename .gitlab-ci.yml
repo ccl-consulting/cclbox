@@ -38,107 +38,107 @@ qemu:
     - packer validate --only=qemu fedoraserver28.json
     - packer validate --only=qemu fedoraserver28-local.json
 
-terraform-build-box:
-  stage: Provisioning GCP
-  image:
-    name: hashicorp/terraform:0.11.14
-    entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
-    - git clone https://github.com/ccl-consulting/terraform-gcp-nested-virtualization.git
-    - cd terraform-gcp-nested-virtualization
-    - echo $GCLOUD_SERVICE_KEY > ./account.json
-    - terraform init
-    - terraform validate -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20'
-    - terraform plan -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20'
-    - terraform apply -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20' -auto-approve
-  cache:
-    key: "TERRAFORM-BUILD-BOX-$CI_PIPELINE_ID"
-    paths:
-      - terraform-gcp-nested-virtualization/
-  only:
-    - master
-    - schedules
+# terraform-build-box:
+#   stage: Provisioning GCP
+#   image:
+#     name: hashicorp/terraform:0.11.14
+#     entrypoint:
+#     - '/usr/bin/env'
+#     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#   script:
+#     - git clone https://github.com/ccl-consulting/terraform-gcp-nested-virtualization.git
+#     - cd terraform-gcp-nested-virtualization
+#     - echo $GCLOUD_SERVICE_KEY > ./account.json
+#     - terraform init
+#     - terraform validate -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20'
+#     - terraform plan -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20'
+#     - terraform apply -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20' -auto-approve
+#   cache:
+#     key: "TERRAFORM-BUILD-BOX-$CI_PIPELINE_ID"
+#     paths:
+#       - terraform-gcp-nested-virtualization/
+#   only:
+#     - master
+#     - schedules
 
-vagrantbox-centos7:
-  stage: Build and Deploy - Phase 1
-  image:
-    name: google/cloud-sdk:latest
-    entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
-    - echo $VAGRANT_TOKEN > ./VAGRANT_TOKEN.txt
-    - echo $GCLOUD_SERVICE_KEY > ./account.json
-    - gcloud auth activate-service-account --key-file=./account.json
-    - gcloud --quiet config set project $GCP_PROJECT_ID
-    - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
-    - gcloud compute --quiet scp --recurse . bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1:~/ --zone "$GCP_PROJECT_ZONE"
-    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/presrequisite.sh && .gitlabci/presrequisite.sh'
-    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-centos7.sh && .gitlabci/build-centos7.sh'
-  dependencies:
-    - terraform-build-box
-  only:
-    - master
-    - schedules
+# vagrantbox-centos7:
+#   stage: Build and Deploy - Phase 1
+#   image:
+#     name: google/cloud-sdk:latest
+#     entrypoint:
+#     - '/usr/bin/env'
+#     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#   script:
+#     - echo $VAGRANT_TOKEN > ./VAGRANT_TOKEN.txt
+#     - echo $GCLOUD_SERVICE_KEY > ./account.json
+#     - gcloud auth activate-service-account --key-file=./account.json
+#     - gcloud --quiet config set project $GCP_PROJECT_ID
+#     - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
+#     - gcloud compute --quiet scp --recurse . bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1:~/ --zone "$GCP_PROJECT_ZONE"
+#     - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/presrequisite.sh && .gitlabci/presrequisite.sh'
+#     - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-centos7.sh && .gitlabci/build-centos7.sh'
+#   dependencies:
+#     - terraform-build-box
+#   only:
+#     - master
+#     - schedules
 
-vagrantbox-fedoraserver28:
-  stage: Build and Deploy - Phase 2
-  image:
-    name: google/cloud-sdk:latest
-    entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
-    - echo $VAGRANT_TOKEN > ./VAGRANT_TOKEN.txt
-    - echo $GCLOUD_SERVICE_KEY > ./account.json
-    - gcloud auth activate-service-account --key-file=./account.json
-    - gcloud --quiet config set project $GCP_PROJECT_ID
-    - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
-    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-fedoraserver28.sh && .gitlabci/build-fedoraserver28.sh'
-  dependencies:
-    - vagrantbox-centos7
-  only:
-    - master
-    - schedules
+# vagrantbox-fedoraserver28:
+#   stage: Build and Deploy - Phase 2
+#   image:
+#     name: google/cloud-sdk:latest
+#     entrypoint:
+#     - '/usr/bin/env'
+#     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#   script:
+#     - echo $VAGRANT_TOKEN > ./VAGRANT_TOKEN.txt
+#     - echo $GCLOUD_SERVICE_KEY > ./account.json
+#     - gcloud auth activate-service-account --key-file=./account.json
+#     - gcloud --quiet config set project $GCP_PROJECT_ID
+#     - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
+#     - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-fedoraserver28.sh && .gitlabci/build-fedoraserver28.sh'
+#   dependencies:
+#     - vagrantbox-centos7
+#   only:
+#     - master
+#     - schedules
 
-vagrantbox-ubuntu14:
-  stage: Build and Deploy - Phase 3
-  image:
-    name: google/cloud-sdk:latest
-    entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
-    - echo $VAGRANT_TOKEN > ./VAGRANT_TOKEN.txt
-    - echo $GCLOUD_SERVICE_KEY > ./account.json
-    - gcloud auth activate-service-account --key-file=./account.json
-    - gcloud --quiet config set project $GCP_PROJECT_ID
-    - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
-    - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-ubuntu14.sh && .gitlabci/build-ubuntu14.sh'
-  dependencies:
-    - vagrantbox-fedoraserver28
-  only:
-    - master
-    - schedules
+# vagrantbox-ubuntu14:
+#   stage: Build and Deploy - Phase 3
+#   image:
+#     name: google/cloud-sdk:latest
+#     entrypoint:
+#     - '/usr/bin/env'
+#     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#   script:
+#     - echo $VAGRANT_TOKEN > ./VAGRANT_TOKEN.txt
+#     - echo $GCLOUD_SERVICE_KEY > ./account.json
+#     - gcloud auth activate-service-account --key-file=./account.json
+#     - gcloud --quiet config set project $GCP_PROJECT_ID
+#     - gcloud --quiet config set compute/zone $GCP_PROJECT_ZONE
+#     - gcloud compute --quiet --project "$GCP_PROJECT_ID" ssh --zone "$GCP_PROJECT_ZONE" bot-cclbox@vagrant-build-$CI_PIPELINE_ID-1 -- 'chmod 755 .gitlabci/build-ubuntu14.sh && .gitlabci/build-ubuntu14.sh'
+#   dependencies:
+#     - vagrantbox-fedoraserver28
+#   only:
+#     - master
+#     - schedules
 
-terraform-destroy:
-  stage: Destroy GCP
-  image:
-    name: hashicorp/terraform:0.11.14
-    entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-  script:
-    - cd terraform-gcp-nested-virtualization
-    - terraform destroy -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20' -auto-approve
-  cache:
-    key: "TERRAFORM-BUILD-BOX-$CI_PIPELINE_ID"
-    paths:
-      - terraform-gcp-nested-virtualization/
-  dependencies:
-    - vagrantbox-ubuntu14
-  only:
-    - master
-    - schedules
+# terraform-destroy:
+#   stage: Destroy GCP
+#   image:
+#     name: hashicorp/terraform:0.11.14
+#     entrypoint:
+#     - '/usr/bin/env'
+#     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#   script:
+#     - cd terraform-gcp-nested-virtualization
+#     - terraform destroy -var "project-name=$GCP_PROJECT_ID" -var 'vmcount=1' -var "region=$GCP_PROJECT_ZONE" -var "instance-name=vagrant-build-$CI_PIPELINE_ID" -var 'subnetwork-region=europe-west1' -var "network=vagrant-$CI_PIPELINE_ID" -var 'vm_type=n1-standard-2' -var 'os=centos-7-v20180815' -var "image-name=vagrantimg-$CI_PIPELINE_ID" -var "disk-name=vagrantdisk-$CI_PIPELINE_ID" -var 'disk-size=20' -auto-approve
+#   cache:
+#     key: "TERRAFORM-BUILD-BOX-$CI_PIPELINE_ID"
+#     paths:
+#       - terraform-gcp-nested-virtualization/
+#   dependencies:
+#     - vagrantbox-ubuntu14
+#   only:
+#     - master
+#     - schedules
