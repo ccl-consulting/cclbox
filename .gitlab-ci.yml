@@ -1,10 +1,10 @@
 stages:
   - Validate Packer Template
-  - Provisioning GCP
-  - Build and Deploy - Phase 1
-  - Build and Deploy - Phase 2
-  - Build and Deploy - Phase 3
-  - Destroy GCP
+  # - Provisioning GCP
+  # - Build and Deploy - Phase 1
+  # - Build and Deploy - Phase 2
+  # - Build and Deploy - Phase 3
+  # - Destroy GCP
 
 vbox:
   image:
